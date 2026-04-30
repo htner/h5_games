@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MBTI 灵魂读心术 — 交互流程</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cream: { 50: "#FFFDF7", 100: "#FFF9EB", 200: "#FFF3D6" },
+            macaron: {
+              pink: "#FFB5C2", rose: "#FF8FAB", peach: "#FFDAB9",
+              lilac: "#D8B4FE", mint: "#A7F3D0", sky: "#BAE6FD", lemon: "#FDE68A"
+            },
+            brand: {
+              50: "#FFF1F3", 100: "#FFE0E6", 200: "#FFC1CF",
+              300: "#FF93AB", 400: "#FF5C80", 500: "#FF2D5E", 600: "#ED1150"
+            },
+            text: { DEFAULT: "#3D2C35", muted: "#9B8A93" }
+          },
+          borderRadius: { bubble: "1.5rem" }
+        }
+      }
+    };
+  </script>
+  <style>
+    body { background: linear-gradient(160deg, #FFFDF7 0%, #FFF1F3 52%, #FFE0E6 100%); }
+    .card { border-radius: 1rem; box-shadow: 0 2px 12px rgba(255,181,194,.20); background: #fff; }
+    .tag { display: inline-flex; align-items: center; border-radius: 9999px; padding: 2px 10px; font-size: 11px; font-weight: 600; }
+    .flow-line { width: 2px; background: #FFC1CF; margin: 0 auto; }
+    .flow-dot { width: 10px; height: 10px; border-radius: 50%; background: #FF5C80; margin: 0 auto; flex-shrink: 0; }
+  </style>
+</head>
+<body class="min-h-screen text-text antialiased">
+
+<!-- Nav -->
+<nav class="sticky top-0 z-50 border-b border-brand-100/50 bg-cream-50/85 backdrop-blur-md">
+  <div class="mx-auto flex max-w-lg items-center justify-between px-4 py-3">
+    <span class="text-lg font-bold tracking-tight text-brand-500">🎭 MBTI 灵魂读心术</span>
+    <span class="tag" style="background:rgba(255,181,194,.2);color:#C80843">交互流程</span>
+  </div>
+</nav>
+
+<!-- Header -->
+<header class="py-8 text-center">
+  <div class="mx-auto max-w-lg px-4">
+    <h1 class="text-2xl font-extrabold tracking-tight text-brand-600">游戏交互流程与页面结构</h1>
+    <p class="mt-2 text-sm text-text-muted">7 个页面 · 推送驱动 · v1.0 MVP</p>
+  </div>
+</header>
+
+<main class="mx-auto max-w-lg space-y-5 px-4 pb-16">
+
+  <!-- ====== SECTION: Flow ====== -->
+  <section class="card p-5">
+    <h2 class="mb-4 text-base font-semibold">页面流转</h2>
+
+    <!-- Lobby -->
+    <div class="flex items-start gap-3">
+      <div class="flex flex-col items-center">
+        <div class="flow-dot"></div>
+        <div class="flow-line h-12"></div>
+      </div>
+      <div class="flex-1 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">🔮</span>
+          <span class="font-semibold">Lobby</span>
+          <span class="ml-auto rounded-full bg-cream-100 px-2 py-0.5 text-xs text-text-muted">#/lobby</span>
+        </div>
+        <p class="mt-1 text-xs text-text-muted">等待页 · 点击「发起游戏」进入设置</p>
+      </div>
+    </div>
+
+    <!-- Setup -->
+    <div class="flex items-start gap-3">
+      <div class="flex flex-col items-center">
+        <div class="flow-dot"></div>
+        <div class="flow-line h-12"></div>
+      </div>
+      <div class="flex-1 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">🎴</span>
+          <span class="font-semibold">Setup</span>
+          <span class="ml-auto rounded-full bg-cream-100 px-2 py-0.5 text-xs text-text-muted">#/setup</span>
+        </div>
+        <p class="mt-1 text-xs text-text-muted">选卡包 + 题数 → 创建游戏 → 自动推进第一题</p>
+      </div>
+    </div>
+
+    <!-- Loop start -->
+    <div class="ml-1 rounded-xl border-2 border-dashed border-brand-200 p-4 mb-3">
+      <p class="mb-3 text-xs font-semibold text-brand-400">🔄 题目循环 × N 题</p>
+
+      <!-- Guessing -->
+      <div class="flex items-start gap-3">
+        <div class="flex flex-col items-center">
+          <div class="flow-dot" style="background:#FF2D5E"></div>
+          <div class="flow-line h-12"></div>
+        </div>
+        <div class="flex-1 pb-3">
+          <div class="flex items-center gap-2">
+            <span class="text-xl">🤔</span>
+            <span class="font-semibold">Guessing</span>
+            <span class="ml-auto rounded-full bg-brand-50 px-2 py-0.5 text-xs text-brand-500">⏱ 30s</span>
+          </div>
+          <p class="mt-1 text-xs text-text-muted">被猜者选真实答案，猜测者预测 TA 的选择</p>
+        </div>
+      </div>
+
+      <!-- Reveal -->
+      <div class="flex items-start gap-3">
+        <div class="flex flex-col items-center">
+          <div class="flow-dot" style="background:#FF2D5E"></div>
+          <div class="flow-line h-6"></div>
+        </div>
+        <div class="flex-1 pb-2">
+          <div class="flex items-center gap-2">
+            <span class="text-xl">✨</span>
+            <span class="font-semibold">Reveal</span>
+          </div>
+          <p class="mt-1 text-xs text-text-muted">展示分布 → 揭晓答案 → 循环下一题</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Profile -->
+    <div class="flex items-start gap-3">
+      <div class="flex flex-col items-center">
+        <div class="flow-dot"></div>
+        <div class="flow-line h-12"></div>
+      </div>
+      <div class="flex-1 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">🎭</span>
+          <span class="font-semibold">Profile</span>
+        </div>
+        <p class="mt-1 text-xs text-text-muted">MBTI 四维画像 + 雷达图</p>
+      </div>
+    </div>
+
+    <!-- Settlement -->
+    <div class="flex items-start gap-3">
+      <div class="flex flex-col items-center">
+        <div class="flow-dot"></div>
+      </div>
+      <div class="flex-1">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">🏆</span>
+          <span class="font-semibold">Settlement</span>
+        </div>
+        <p class="mt-1 text-xs text-text-muted">排行榜 → 分享 → 返回 Lobby</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== SECTION: Pages ====== -->
+  <section class="card p-5">
+    <div class="mb-3 flex items-center justify-between">
+      <h2 class="text-base font-semibold">01. Lobby — 等待页</h2>
+      <span class="tag" style="background:rgba(167,243,208,.3);color:#065F46">#/lobby</span>
+    </div>
+    <div class="rounded-xl border border-brand-100 bg-cream-50 px-4 py-6 text-center">
+      <div class="text-4xl">🔮</div>
+      <p class="mt-3 text-sm font-semibold">🎭 灵魂读心术</p>
+      <p class="mt-1 text-xs text-text-muted">测测你有多懂 TA</p>
+      <p class="mt-4 text-xs text-text-muted">等待主播发起游戏...</p>
+      <button class="mt-4 rounded-bubble bg-brand-400 px-6 py-2 text-sm font-bold text-white shadow-sm">发起游戏</button>
+    </div>
+    <div class="mt-3 space-y-1 text-xs text-text-muted">
+      <p>→ idle 状态显示等待 + 发起按钮</p>
+      <p>→ 进行中时显示题目进度</p>
+    </div>
+  </section>
+
+  <section class="card p-5">
+    <div class="mb-3 flex items-center justify-between">
+      <h2 class="text-base font-semibold">02. Setup — 选择卡包</h2>
+      <span class="tag" style="background:rgba(167,243,208,.3);color:#065F46">#/setup</span>
+    </div>
+    <div class="space-y-2">
+      <div class="flex items-center gap-3 rounded-xl border-2 border-brand-300 bg-brand-50 px-3 py-2.5">
+        <span class="text-2xl">❤️</span>
+        <div><p class="text-sm font-semibold">心动信号</p><p class="text-xs text-text-muted">情感类直播、CP互动</p></div>
+      </div>
+      <div class="flex items-center gap-3 rounded-xl border border-brand-100 px-3 py-2.5">
+        <span class="text-2xl">🔥</span>
+        <div><p class="text-sm font-semibold">高能社交</p><p class="text-xs text-text-muted">日常聊天、吐槽</p></div>
+      </div>
+      <div class="flex items-center gap-3 rounded-xl border border-brand-100 px-3 py-2.5">
+        <span class="text-2xl">🧠</span>
+        <div><p class="text-sm font-semibold">脑洞剧场</p><p class="text-xs text-text-muted">综艺感强的房间</p></div>
+      </div>
+    </div>
+    <div class="mt-3 flex items-center justify-between">
+      <span class="text-sm">题目数量</span>
+      <div class="flex gap-1.5">
+        <span class="rounded-lg bg-cream-100 px-3 py-1 text-xs">5</span>
+        <span class="rounded-lg bg-brand-400 px-3 py-1 text-xs font-bold text-white">8</span>
+        <span class="rounded-lg bg-cream-100 px-3 py-1 text-xs">10</span>
+      </div>
+    </div>
+    <button class="mt-4 w-full rounded-bubble bg-brand-400 py-2.5 text-sm font-bold text-white">开始游戏</button>
+    <div class="mt-3 space-y-1 text-xs text-text-muted">
+      <p>→ 加载卡包列表，选择后开始</p>
+      <p>→ 调用 createGame + nextQuestion → 回 Lobby 等推送</p>
+    </div>
+  </section>
+
+  <section class="card p-5">
+    <div class="mb-3 flex items-center justify-between">
+      <h2 class="text-base font-semibold">03. Guessing — 灵魂盲填</h2>
+      <span class="tag" style="background:rgba(253,203,110,.3);color:#92400E">核心页</span>
+    </div>
+    <div class="rounded-xl border border-brand-100 bg-cream-50 p-4">
+      <div class="mb-2 flex items-center justify-between text-xs text-text-muted">
+        <span>3 / 8</span>
+        <span class="rounded-full bg-brand-50 px-2 py-0.5 text-brand-500 font-semibold">⏱ 22s</span>
+      </div>
+      <div class="mb-1 h-1.5 rounded-full bg-cream-200"><div class="h-full rounded-full bg-brand-400" style="width:73%"></div></div>
+      <p class="mt-3 text-sm font-semibold leading-relaxed">忙碌了一周后的周五晚上，主播通常会如何「充电」？</p>
+      <p class="mt-1 text-xs text-text-muted">猜猜 TA 会选什么？</p>
+      <div class="mt-3 space-y-2">
+        <div class="rounded-xl border border-brand-100 bg-white px-3 py-2.5 text-sm">约上一群朋友去 KTV 或派对狂欢</div>
+        <div class="rounded-xl border-2 border-brand-400 bg-brand-50 px-3 py-2.5 text-sm font-semibold text-brand-600">独自待在家里，点个外卖安静看剧 ✓</div>
+      </div>
+      <div class="mt-3 flex items-center justify-between text-xs text-text-muted">
+        <span style="color:#D97706">🔒 TA 已做出选择...</span>
+        <span>12 人已猜测</span>
+      </div>
+    </div>
+    <div class="mt-3 space-y-1 text-xs text-text-muted">
+      <p>→ 被猜者看到「请选择你的真实答案」</p>
+      <p>→ 猜测者看到「猜猜 TA 会选什么？」</p>
+      <p>→ 30s 倒计时，最后 10s 高亮警告</p>
+    </div>
+  </section>
+
+  <section class="card p-5">
+    <div class="mb-3 flex items-center justify-between">
+      <h2 class="text-base font-semibold">04. Reveal — 答案揭晓</h2>
+      <span class="tag" style="background:rgba(253,203,110,.3);color:#92400E">核心页</span>
+    </div>
+    <div class="rounded-xl border border-brand-100 bg-cream-50 p-4 text-center">
+      <p class="text-sm text-text-muted leading-relaxed">忙碌了一周后的周五晚上，主播通常会如何「充电」？</p>
+      <div class="mt-4 space-y-2 text-left text-sm">
+        <div class="flex items-center gap-2">
+          <span class="w-6 text-xs text-text-muted">A</span>
+          <div class="flex-1 h-6 rounded-full bg-cream-200 overflow-hidden"><div class="h-full rounded-full bg-macaron-pink" style="width:62%"></div></div>
+          <span class="w-10 text-right text-xs text-text-muted">62%</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="w-6 text-xs text-text-muted">B</span>
+          <div class="flex-1 h-6 rounded-full bg-cream-200 overflow-hidden"><div class="h-full rounded-full bg-brand-400" style="width:38%"></div></div>
+          <span class="w-10 text-right text-xs text-text-muted">38%</span>
+        </div>
+      </div>
+      <div class="mt-4 rounded-xl bg-white border border-macaron-lemon px-3 py-3">
+        <p class="text-lg font-bold text-brand-500">✨ TA 的真实答案是：B</p>
+        <p class="mt-1 text-sm text-green-600 font-semibold">🎉 你猜对了！</p>
+        <p class="mt-2 text-xs text-text-muted italic">"选 B 的 TA 享受独处，安静是最好的充电方式"</p>
+      </div>
+    </div>
+    <div class="mt-3 space-y-1 text-xs text-text-muted">
+      <p>→ 主播/被猜者控制揭晓节奏（先分布再答案）</p>
+      <p>→ 揭晓后自动循环下一题</p>
+    </div>
+  </section>
+
+  <section class="card p-5">
+    <div class="mb-3 flex items-center justify-between">
+      <h2 class="text-base font-semibold">05. Profile — MBTI 画像</h2>
+      <span class="tag" style="background:rgba(167,243,208,.3);color:#065F46">#/profile</span>
+    </div>
+    <div class="rounded-xl border border-brand-100 bg-cream-50 px-4 py-5 text-center">
+      <p class="text-4xl font-extrabold" style="background:linear-gradient(135deg,#FF5C80,#D8B4FE);-webkit-background-clip:text;-webkit-text-fill-color:transparent">ENFP</p>
+      <p class="mt-1 text-sm font-semibold">竞选者</p>
+      <p class="mt-1 text-xs text-text-muted">"热情洋溢的自由灵魂，走到哪都是焦点"</p>
+      <div class="mt-4 space-y-2 text-left text-sm">
+        <div class="flex items-center gap-2"><span class="w-5 text-xs font-bold text-brand-500">E</span><div class="flex-1 h-4 rounded-full bg-cream-200 overflow-hidden"><div class="h-full rounded-full bg-brand-400" style="width:80%"></div></div><span class="w-10 text-right text-xs text-text-muted">80%</span></div>
+        <div class="flex items-center gap-2"><span class="w-5 text-xs font-bold text-macaron-lilac">N</span><div class="flex-1 h-4 rounded-full bg-cream-200 overflow-hidden"><div class="h-full rounded-full bg-macaron-lilac" style="width:67%"></div></div><span class="w-10 text-right text-xs text-text-muted">67%</span></div>
+        <div class="flex items-center gap-2"><span class="w-5 text-xs font-bold text-macaron-rose">F</span><div class="flex-1 h-4 rounded-full bg-cream-200 overflow-hidden"><div class="h-full rounded-full bg-macaron-rose" style="width:75%"></div></div><span class="w-10 text-right text-xs text-text-muted">75%</span></div>
+        <div class="flex items-center gap-2"><span class="w-5 text-xs font-bold text-macaron-sky">P</span><div class="flex-1 h-4 rounded-full bg-cream-200 overflow-hidden"><div class="h-full rounded-full bg-macaron-sky" style="width:50%"></div></div><span class="w-10 text-right text-xs text-text-muted">50%</span></div>
+      </div>
+    </div>
+    <button class="mt-4 w-full rounded-bubble bg-brand-400 py-2.5 text-sm font-bold text-white">查看排行榜</button>
+  </section>
+
+  <section class="card p-5">
+    <div class="mb-3 flex items-center justify-between">
+      <h2 class="text-base font-semibold">06. Settlement — 排行榜</h2>
+      <span class="tag" style="background:rgba(167,243,208,.3);color:#065F46">#/settlement</span>
+    </div>
+    <div class="overflow-hidden rounded-xl border border-brand-100">
+      <div class="bg-cream-100/70 px-3 py-2 text-xs font-semibold">🏆 灵魂契合排行榜</div>
+      <div class="divide-y divide-brand-100/50">
+        <div class="flex items-center gap-3 px-3 py-2.5">
+          <span class="text-lg">🥇</span>
+          <div class="flex-1"><p class="text-sm font-semibold">用户A</p><p class="text-xs text-text-muted">契合度 87%</p></div>
+          <span class="text-sm font-bold text-brand-500">850</span>
+        </div>
+        <div class="flex items-center gap-3 px-3 py-2.5">
+          <span class="text-lg">🥈</span>
+          <div class="flex-1"><p class="text-sm font-semibold">用户B</p><p class="text-xs text-text-muted">契合度 75%</p></div>
+          <span class="text-sm font-bold text-brand-400">720</span>
+        </div>
+        <div class="flex items-center gap-3 px-3 py-2.5">
+          <span class="text-lg">🥉</span>
+          <div class="flex-1"><p class="text-sm font-semibold">用户C</p><p class="text-xs text-text-muted">契合度 62%</p></div>
+          <span class="text-sm font-bold text-brand-300">680</span>
+        </div>
+      </div>
+    </div>
+    <div class="mt-3 rounded-xl bg-cream-100/70 px-3 py-2 text-center text-xs text-text-muted">
+      你的排名：第 <span class="font-bold text-brand-500">3</span> 名 / 共 56 人
+    </div>
+    <div class="mt-3 flex gap-2">
+      <button class="flex-1 rounded-bubble bg-brand-400 py-2.5 text-sm font-bold text-white">分享排名</button>
+      <button class="flex-1 rounded-bubble border border-brand-100 py-2.5 text-sm font-semibold">返回</button>
+    </div>
+  </section>
+
+  <!-- ====== SECTION: Push Events ====== -->
+  <section class="card p-5">
+    <h2 class="mb-4 text-base font-semibold">推送事件驱动</h2>
+    <p class="mb-3 text-xs text-text-muted">服务端通过 room_push → Flutter WS → H5 onDartEvent 推送游戏状态</p>
+    <div class="space-y-2">
+      <div class="flex items-center gap-2 rounded-lg bg-cream-100/70 px-3 py-2">
+        <span class="rounded-full bg-macaron-mint/50 px-2 py-0.5 text-xs text-green-700">导航</span>
+        <span class="flex-1 text-xs font-semibold">game_started</span>
+        <span class="text-xs text-text-muted">→ Lobby</span>
+      </div>
+      <div class="flex items-center gap-2 rounded-lg bg-cream-100/70 px-3 py-2">
+        <span class="rounded-full bg-macaron-mint/50 px-2 py-0.5 text-xs text-green-700">导航</span>
+        <span class="flex-1 text-xs font-semibold">guessing_started</span>
+        <span class="text-xs text-text-muted">→ Guessing</span>
+      </div>
+      <div class="flex items-center gap-2 rounded-lg bg-cream-100/70 px-3 py-2">
+        <span class="rounded-full bg-cream-200 px-2 py-0.5 text-xs text-text-muted">状态</span>
+        <span class="flex-1 text-xs font-semibold">target_locked</span>
+        <span class="text-xs text-text-muted">显示锁定提示</span>
+      </div>
+      <div class="flex items-center gap-2 rounded-lg bg-cream-100/70 px-3 py-2">
+        <span class="rounded-full bg-cream-200 px-2 py-0.5 text-xs text-text-muted">状态</span>
+        <span class="flex-1 text-xs font-semibold">guess_count</span>
+        <span class="text-xs text-text-muted">更新人数</span>
+      </div>
+      <div class="flex items-center gap-2 rounded-lg bg-cream-100/70 px-3 py-2">
+        <span class="rounded-full bg-macaron-mint/50 px-2 py-0.5 text-xs text-green-700">导航</span>
+        <span class="flex-1 text-xs font-semibold">reveal_distribution</span>
+        <span class="text-xs text-text-muted">→ Reveal</span>
+      </div>
+      <div class="flex items-center gap-2 rounded-lg bg-cream-100/70 px-3 py-2">
+        <span class="rounded-full bg-cream-200 px-2 py-0.5 text-xs text-text-muted">状态</span>
+        <span class="flex-1 text-xs font-semibold">reveal_answer</span>
+        <span class="text-xs text-text-muted">正确答案 + 结果</span>
+      </div>
+      <div class="flex items-center gap-2 rounded-lg bg-cream-100/70 px-3 py-2">
+        <span class="rounded-full bg-macaron-mint/50 px-2 py-0.5 text-xs text-green-700">导航</span>
+        <span class="flex-1 text-xs font-semibold">profile_ready</span>
+        <span class="text-xs text-text-muted">→ Profile</span>
+      </div>
+      <div class="flex items-center gap-2 rounded-lg bg-cream-100/70 px-3 py-2">
+        <span class="rounded-full bg-macaron-mint/50 px-2 py-0.5 text-xs text-green-700">导航</span>
+        <span class="flex-1 text-xs font-semibold">settlement</span>
+        <span class="text-xs text-text-muted">→ Settlement</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== SECTION: Roles ====== -->
+  <section class="card p-5">
+    <h2 class="mb-4 text-base font-semibold">角色差异</h2>
+    <div class="space-y-3">
+      <div class="rounded-xl border border-brand-100 overflow-hidden">
+        <div class="bg-cream-100/70 px-3 py-2 text-xs font-semibold">Guessing 页面</div>
+        <div class="grid grid-cols-2 divide-x divide-brand-100/50">
+          <div class="px-3 py-2.5">
+            <p class="text-xs font-semibold text-brand-500">被猜者</p>
+            <p class="mt-1 text-xs text-text-muted">「请选择你的真实答案」</p>
+            <p class="mt-0.5 text-xs text-text-muted">无状态栏</p>
+          </div>
+          <div class="px-3 py-2.5">
+            <p class="text-xs font-semibold text-macaron-lilac">猜测者</p>
+            <p class="mt-1 text-xs text-text-muted">「猜猜 TA 会选什么？」</p>
+            <p class="mt-0.5 text-xs text-text-muted">🔒 锁定 + N 人已猜测</p>
+          </div>
+        </div>
+      </div>
+      <div class="rounded-xl border border-brand-100 overflow-hidden">
+        <div class="bg-cream-100/70 px-3 py-2 text-xs font-semibold">Reveal 页面</div>
+        <div class="grid grid-cols-2 divide-x divide-brand-100/50">
+          <div class="px-3 py-2.5">
+            <p class="text-xs font-semibold text-brand-500">主播/被猜者</p>
+            <p class="mt-1 text-xs text-text-muted">控制揭晓节奏</p>
+          </div>
+          <div class="px-3 py-2.5">
+            <p class="text-xs font-semibold text-macaron-lilac">猜测者</p>
+            <p class="mt-1 text-xs text-text-muted">只能观看</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== SECTION: Bugs ====== -->
+  <section class="card p-5">
+    <h2 class="mb-4 text-base font-semibold">问题追踪</h2>
+    <div class="space-y-3">
+      <div class="rounded-xl border-l-4 border-macaron-mint bg-macaron-mint/20 px-3 py-2.5">
+        <div class="flex items-center gap-2">
+          <span class="tag" style="background:rgba(167,243,208,.5);color:#065F46">✅ 已修复</span>
+          <span class="text-xs font-bold">P0</span>
+        </div>
+        <p class="mt-1 text-sm font-semibold">推送监听器随页面切换丢失</p>
+        <p class="text-xs text-text-muted">useGameState 从 LobbyView 移到 App.vue</p>
+      </div>
+      <div class="rounded-xl border-l-4 border-macaron-mint bg-macaron-mint/20 px-3 py-2.5">
+        <div class="flex items-center gap-2">
+          <span class="tag" style="background:rgba(167,243,208,.5);color:#065F46">✅ 已修复</span>
+          <span class="text-xs font-bold">P0</span>
+        </div>
+        <p class="mt-1 text-sm font-semibold">创建游戏后无导航</p>
+        <p class="text-xs text-text-muted">createGame 后调 nextQuestion + 回 Lobby</p>
+      </div>
+      <div class="rounded-xl border-l-4 border-macaron-lemon bg-macaron-lemon/20 px-3 py-2.5">
+        <div class="flex items-center gap-2">
+          <span class="tag" style="background:rgba(253,203,110,.3);color:#92400E">待修复</span>
+          <span class="text-xs font-bold">P1</span>
+        </div>
+        <p class="mt-1 text-sm font-semibold">结算页无法显示个人排名</p>
+        <p class="text-xs text-text-muted">setSettlement 未赋值 myRank / myScore</p>
+      </div>
+      <div class="rounded-xl border-l-4 border-cream-200 bg-cream-100/50 px-3 py-2.5">
+        <div class="flex items-center gap-2">
+          <span class="tag" style="background:rgba(0,0,0,.05);color:#9B8A93">待修复</span>
+          <span class="text-xs font-bold">P2</span>
+        </div>
+        <p class="mt-1 text-sm font-semibold">断线重连数据不完整</p>
+        <p class="text-xs text-text-muted">GetGameState 缺少题目/选项/deadline 等字段</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== SECTION: Architecture ====== -->
+  <section class="card p-5">
+    <h2 class="mb-4 text-base font-semibold">通信链路</h2>
+    <div class="space-y-2">
+      <div class="flex items-center gap-2 text-xs">
+        <span class="rounded-lg bg-brand-50 px-2 py-1 font-semibold text-brand-500">H5</span>
+        <span class="text-text-muted">── HTTP /mbti/v1/* ──→</span>
+        <span class="rounded-lg bg-macaron-lemon/40 px-2 py-1 font-semibold">Gateway</span>
+        <span class="text-text-muted">──→</span>
+        <span class="rounded-lg bg-macaron-lilac/40 px-2 py-1 font-semibold">MBTI Go</span>
+      </div>
+      <div class="flex items-center gap-2 text-xs">
+        <span class="rounded-lg bg-macaron-lilac/40 px-2 py-1 font-semibold">MBTI Go</span>
+        <span class="text-text-muted">── room_push ──→</span>
+        <span class="rounded-lg bg-macaron-sky/40 px-2 py-1 font-semibold">WS</span>
+        <span class="text-text-muted">──→</span>
+        <span class="rounded-lg bg-macaron-mint/40 px-2 py-1 font-semibold">Flutter</span>
+        <span class="text-text-muted">──→</span>
+        <span class="rounded-lg bg-brand-50 px-2 py-1 font-semibold text-brand-500">H5</span>
+      </div>
+      <p class="mt-1 text-xs text-text-muted">Flutter 在 Op20 收到事件后通过 JSBridge (onDartEvent) 转发给 H5 WebView</p>
+    </div>
+  </section>
+
+</main>
+</body>
+</html>

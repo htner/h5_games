@@ -1,0 +1,103 @@
+[
+   {
+     "id": 1,
+     "category": "Social Energy",
+     "dimension": "E-I",
+     "question": "忙碌了一周后的周五晚上，主播通常会如何‘充电’？",
+     "options": [
+       { "text": "约上一群朋友去 KTV 或派对狂欢", "value": "E" },
+       { "text": "独自待在家里，点个外卖安静看剧", "value": "I" }
+     ]
+   },
+   {
+     "id": 2,
+     "category": "Social Energy",
+     "dimension": "E-I",
+     "question": "进入一个全是陌生人的语音房，主播的第一反应是？",
+     "options": [
+       { "text": "主动开麦打招呼，快速融入氛围", "value": "E" },
+       { "text": "先闭麦观察，确定环境安全再说话", "value": "I" }
+     ]
+   },
+   {
+     "id": 3,
+     "category": "Information",
+     "dimension": "S-N",
+     "question": "主播向别人安利一部电影时，更倾向于怎么表达？",
+     "options": [
+       { "text": "描述精彩的剧情细节和演员演技", "value": "S" },
+       { "text": "解读电影背后的深意和带给人的哲学思考", "value": "N" }
+     ]
+   },
+   {
+     "id": 4,
+     "category": "Information",
+     "dimension": "S-N",
+     "question": "如果中了超级大奖，主播的第一反应更接近？",
+     "options": [
+       { "text": "立刻算账：扣完税剩多少，存多少拿多少花", "value": "S" },
+       { "text": "陷入幻想：以后的人生终于可以过上理想生活了", "value": "N" }
+     ]
+   },
+   {
+     "id": 5,
+     "category": "Decision Making",
+     "dimension": "T-F",
+     "question": "闺蜜被渣男劈腿跑来大哭，主播的第一反应是？",
+     "options": [
+       { "text": "理智分析渣男套路，帮她制定分手计划", "value": "T" },
+       { "text": "陪她一起大骂渣男，给予情感上的安慰", "value": "F" }
+     ]
+   },
+   {
+     "id": 6,
+     "category": "Decision Making",
+     "dimension": "T-F",
+     "question": "在语音房公会管理中，主播更看重什么？",
+     "options": [
+       { "text": "制度与公平，事情必须按规矩高效完成", "value": "T" },
+       { "text": "人情与和谐，大家的感受比规矩更重要", "value": "F" }
+     ]
+   },
+   {
+     "id": 7,
+     "category": "Lifestyle",
+     "dimension": "J-P",
+     "question": "主播的手机桌面/电脑桌面通常是什么状态？",
+     "options": [
+       { "text": "分类清晰，没有多余红点，整整齐齐", "value": "J" },
+       { "text": "随性摆放，满屏红点，找东西靠感觉", "value": "P" }
+     ]
+   },
+   {
+     "id": 8,
+     "category": "Lifestyle",
+     "dimension": "J-P",
+     "question": "去异国旅行前，主播的攻略会做到什么程度？",
+     "options": [
+       { "text": "订好所有机票酒店，精确到每小时的行程", "value": "J" },
+       { "text": "只订好首晚酒店，剩下的到了地方随缘看", "value": "P" }
+     ]
+   },
+   {
+     "id": 9,
+     "category": "Extreme Scenarios",
+     "dimension": "T-F",
+     "question": "流落荒岛只能带一个人，主播会选谁？",
+     "options": [
+       { "text": "虽然脾气古怪但极度聪明的生存专家", "value": "T" },
+       { "text": "虽然手无缚鸡之力但极度温柔的爱人", "value": "F" }
+     ]
+   },
+   {
+     "id": 10,
+     "category": "World View",
+     "dimension": "S-N",
+     "question": "主播相信‘直觉/第六感’吗？",
+     "options": [
+       { "text": "不太信，我更相信眼见为实的逻辑和证据", "value": "S" },
+       { "text": "非常信，很多时候我的第一反应都很准", "value": "N" }
+     ]
+   }
+ ]
+ 
