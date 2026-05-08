@@ -40,17 +40,17 @@ function onClick() {
   border-radius: var(--radius-md);
   color: var(--color-text);
   text-align: left;
-  transition: all 0.2s;
+  transition: all .2s;
 }
 .option-btn:active:not(.disabled) {
-  transform: scale(0.98);
+  transform: scale(.98);
 }
 .option-btn.selected {
   border-color: var(--color-primary);
   background: var(--color-bg-muted);
 }
 .option-btn.disabled:not(.selected) {
-  opacity: 0.5;
+  opacity: .5;
 }
 .option-text {
   flex: 1;
@@ -62,7 +62,7 @@ function onClick() {
   height: 24px;
   border-radius: 50%;
   background: var(--color-primary);
-  color: white;
+  color: #fff;
   font-size: 13px;
   font-weight: 700;
   display: flex;

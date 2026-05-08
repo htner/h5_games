@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useGameStore } from '@/stores/game'
-import { useUserStore } from '@/stores/user'
+import { useGameStore } from '../stores/game'
+import { useUserStore } from '../stores/user'
 import { useRouter } from 'vue-router'
 
 const game = useGameStore()
@@ -9,7 +9,7 @@ const router = useRouter()
 
 user.fetchUserInfo()
 
-function onSetup() {
+function goSetup() {
   router.push('/setup')
 }
 </script>
@@ -26,11 +26,20 @@ function onSetup() {
       <div v-if="game.phase === 'idle'" class="lobby-idle card fade-in">
         <div class="lobby-icon">🔮</div>
         <p class="lobby-hint">等待主播发起游戏...</p>
-        <button class="btn-primary lobby-btn" @click="onSetup">发起游戏</button>
+        <button
+          v-if="user.isHost"
+          class="btn-primary lobby-btn"
+          @click="goSetup"
+        >
+          发起游戏
+        </button>
       </div>
+
       <div v-else class="lobby-active card fade-in">
         <p class="active-label">游戏进行中</p>
-        <p class="active-progress">第 {{ game.currentQuestionIdx + 1 }} / {{ game.totalQuestions }} 题</p>
+        <p class="active-progress">
+          第 {{ game.currentQuestionIdx + 1 }} / {{ game.totalQuestions }} 题
+        </p>
       </div>
     </div>
   </div>

@@ -36,7 +36,7 @@ defineProps<{
   height: 100%;
   background: var(--color-primary);
   border-radius: 4px;
-  transition: width 0.1s linear;
+  transition: width .1s linear;
 }
 .countdown-fill.urgent {
   background: var(--color-danger);

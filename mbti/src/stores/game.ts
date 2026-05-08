@@ -1,56 +1,90 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type {
-  GamePhase,
-  UserRole,
-  PackInfo,
-  QuestionDetail,
-  QuestionBrief,
-  RankingItem,
-  MBTIProfile,
-  RevealedQuestion,
-} from '@/types/game'
+
+export interface QuestionOption {
+  value: string
+  text: string
+}
+
+export interface Question {
+  id: number
+  question: string
+  dimension: string
+  options: QuestionOption[]
+}
+
+export interface CandidateQuestion {
+  id: number
+  question: string
+  dimension: string
+}
+
+export interface ProfileData {
+  mbti_type: string
+  label: string
+  description: string
+  dimensions: Array<{
+    dimension: string
+    dominant: string
+    percentage: number
+  }>
+}
+
+export interface RankingEntry {
+  uid: number
+  nickname: string
+  avatar_url: string
+  score: number
+  correct_count: number
+  max_streak: number
+}
+
+export type GamePhase =
+  | 'idle'
+  | 'setup'
+  | 'voting'
+  | 'guessing'
+  | 'revealing'
+  | 'profile'
+  | 'settlement'
 
 export const useGameStore = defineStore('game', () => {
   const gameId = ref<number | null>(null)
   const phase = ref<GamePhase>('idle')
-  const myRole = ref<UserRole>('guesser')
-
-  const packInfo = ref<PackInfo | null>(null)
+  const myRole = ref<'guesser' | 'host' | 'target'>('guesser')
+  const packInfo = ref<any>(null)
   const totalQuestions = ref(0)
   const currentQuestionIdx = ref(0)
-  const currentQuestion = ref<QuestionDetail | null>(null)
-  const candidateQuestions = ref<QuestionBrief[]>([])
-
+  const currentQuestion = ref<Question | null>(null)
+  const candidateQuestions = ref<CandidateQuestion[]>([])
   const myGuess = ref<string | null>(null)
   const targetLocked = ref(false)
   const guessCount = ref(0)
   const deadlineMs = ref(0)
-
   const distribution = ref<Record<string, number>>({})
   const correctAnswer = ref<string | null>(null)
   const isCorrect = ref<boolean | null>(null)
   const streak = ref(0)
   const revealComment = ref('')
-
-  const ranking = ref<RankingItem[]>([])
+  const ranking = ref<RankingEntry[]>([])
   const myRank = ref(0)
   const myScore = ref(0)
   const totalPlayers = ref(0)
-
-  const profile = ref<MBTIProfile | null>(null)
-  const revealed = ref<RevealedQuestion[]>([])
-
+  const profile = ref<ProfileData | null>(null)
+  const revealed = ref<number[]>([])
   const targetUid = ref(0)
   const targetNickname = ref('')
   const targetAvatarUrl = ref('')
 
-  const progress = computed(() => {
-    if (totalQuestions.value === 0) return 0
-    return currentQuestionIdx.value / totalQuestions.value
-  })
+  const progress = computed(() =>
+    totalQuestions.value === 0 ? 0 : currentQuestionIdx.value / totalQuestions.value,
+  )
 
-  function initGame(data: any) {
+  function initGame(data: {
+    game_id: number
+    target_uid: number
+    total_questions: number
+  }) {
     gameId.value = data.game_id
     targetUid.value = data.target_uid
     totalQuestions.value = data.total_questions
@@ -62,12 +96,12 @@ export const useGameStore = defineStore('game', () => {
     streak.value = 0
   }
 
-  function startVoting(candidates: QuestionBrief[]) {
+  function startVoting(candidates: CandidateQuestion[]) {
     phase.value = 'voting'
     candidateQuestions.value = candidates
   }
 
-  function startGuessing(question: QuestionDetail, deadline: number) {
+  function startGuessing(question: Question, deadline: number) {
     phase.value = 'guessing'
     currentQuestion.value = question
     deadlineMs.value = deadline
@@ -90,23 +124,32 @@ export const useGameStore = defineStore('game', () => {
     correctAnswer.value = null
   }
 
-  function revealAnswer(data: any) {
+  function revealAnswer(data: {
+    correct_answer: string
+    distribution?: Record<string, number>
+    reveal_comment?: string
+  }) {
     correctAnswer.value = data.correct_answer
-    distribution.value = data.distribution || distribution.value
+    if (data.distribution) distribution.value = data.distribution
     revealComment.value = data.reveal_comment || ''
-
     if (myGuess.value && data.correct_answer) {
       isCorrect.value = myGuess.value === data.correct_answer
     }
     currentQuestionIdx.value++
   }
 
-  function showStreak(data: any) {
-    if (data.uid === targetUid.value) return
-    streak.value = data.streak_count
+  function showStreak(data: { uid: number; streak_count: number }) {
+    if (data.uid !== targetUid.value) {
+      streak.value = data.streak_count
+    }
   }
 
-  function setProfile(data: any) {
+  function setProfile(data: {
+    mbti_type: string
+    label: string
+    description: string
+    dimensions: ProfileData['dimensions']
+  }) {
     phase.value = 'profile'
     profile.value = {
       mbti_type: data.mbti_type,
@@ -116,7 +159,10 @@ export const useGameStore = defineStore('game', () => {
     }
   }
 
-  function setSettlement(data: any) {
+  function setSettlement(data: {
+    rankings?: RankingEntry[]
+    total_players?: number
+  }) {
     phase.value = 'settlement'
     ranking.value = data.rankings || []
     totalPlayers.value = data.total_players || 0
@@ -135,15 +181,43 @@ export const useGameStore = defineStore('game', () => {
   }
 
   return {
-    gameId, phase, myRole,
-    packInfo, totalQuestions, currentQuestionIdx, currentQuestion, candidateQuestions,
-    myGuess, targetLocked, guessCount, deadlineMs,
-    distribution, correctAnswer, isCorrect, streak, revealComment,
-    ranking, myRank, myScore, totalPlayers,
-    profile, revealed,
-    targetUid, targetNickname, targetAvatarUrl,
+    gameId,
+    phase,
+    myRole,
+    packInfo,
+    totalQuestions,
+    currentQuestionIdx,
+    currentQuestion,
+    candidateQuestions,
+    myGuess,
+    targetLocked,
+    guessCount,
+    deadlineMs,
+    distribution,
+    correctAnswer,
+    isCorrect,
+    streak,
+    revealComment,
+    ranking,
+    myRank,
+    myScore,
+    totalPlayers,
+    profile,
+    revealed,
+    targetUid,
+    targetNickname,
+    targetAvatarUrl,
     progress,
-    initGame, startVoting, startGuessing, setTargetLocked, updateGuessCount,
-    showDistribution, revealAnswer, showStreak, setProfile, setSettlement, reset,
+    initGame,
+    startVoting,
+    startGuessing,
+    setTargetLocked,
+    updateGuessCount,
+    showDistribution,
+    revealAnswer,
+    showStreak,
+    setProfile,
+    setSettlement,
+    reset,
   }
 })

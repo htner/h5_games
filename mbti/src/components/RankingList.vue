@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { RankingItem } from '@/types/game'
+import type { RankingEntry } from '../stores/game'
 
 defineProps<{
-  items: RankingItem[]
+  items: RankingEntry[]
 }>()
 
 const medals = ['🥇', '🥈', '🥉']
@@ -17,7 +17,7 @@ const medals = ['🥇', '🥈', '🥉']
       :class="{ top3: idx < 3 }"
     >
       <span class="rank-badge">{{ idx < 3 ? medals[idx] : `${idx + 1}.` }}</span>
-      <div class="rank-avatar" v-if="item.avatar_url">
+      <div v-if="item.avatar_url" class="rank-avatar">
         <img :src="item.avatar_url" alt="" />
       </div>
       <div class="rank-info">
@@ -48,7 +48,7 @@ const medals = ['🥇', '🥈', '🥉']
 }
 .ranking-item.top3 {
   background: var(--color-bg-muted);
-  border-color: #FFB5C2;
+  border-color: #ffb5c2;
 }
 .rank-badge {
   font-size: 18px;

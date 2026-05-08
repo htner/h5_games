@@ -1,24 +1,23 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useGameStore } from '@/stores/game'
-import { useCountdown } from '@/composables/useCountdown'
-import { mbtiApi } from '@/api/mbti'
-import CountdownBar from '@/components/CountdownBar.vue'
-import OptionButton from '@/components/OptionButton.vue'
+import { useGameStore } from '../stores/game'
+import { useCountdown } from '../composables/useCountdown'
+import { mbtiApi } from '../api/mbti'
+import CountdownBar from '../components/CountdownBar.vue'
+import OptionButton from '../components/OptionButton.vue'
 
 const game = useGameStore()
 const countdown = useCountdown()
 const submitted = ref(false)
 
-countdown.start(game.deadlineMs, 30000)
+countdown.start(game.deadlineMs, 30_000)
 
 const isTarget = game.myRole === 'target'
 
-async function selectAnswer(value: string) {
+async function onSelect(value: string) {
   if (submitted.value) return
   game.myGuess = value
   submitted.value = true
-
   try {
     if (isTarget) {
       await mbtiApi.submitTargetAnswer(game.gameId!, game.currentQuestion!.id, value)
@@ -36,7 +35,9 @@ async function selectAnswer(value: string) {
 <template>
   <div class="page">
     <div class="guess-header card">
-      <div class="q-progress">{{ game.currentQuestionIdx + 1 }} / {{ game.totalQuestions }}</div>
+      <div class="q-progress">
+        {{ game.currentQuestionIdx + 1 }} / {{ game.totalQuestions }}
+      </div>
       <CountdownBar
         :progress="countdown.progress.value"
         :seconds="countdown.seconds()"
@@ -46,8 +47,8 @@ async function selectAnswer(value: string) {
 
     <div class="question-card card fade-in">
       <div class="question-text">{{ game.currentQuestion?.question }}</div>
-      <div class="question-hint" v-if="isTarget">请选择你的真实答案</div>
-      <div class="question-hint" v-else>猜猜 TA 会选什么？</div>
+      <div v-if="isTarget" class="question-hint">请选择你的真实答案</div>
+      <div v-else class="question-hint">猜猜 TA 会选什么？</div>
     </div>
 
     <div class="options-area">
@@ -58,11 +59,11 @@ async function selectAnswer(value: string) {
         :value="opt.value"
         :selected="game.myGuess === opt.value"
         :disabled="submitted"
-        @select="selectAnswer"
+        @select="onSelect"
       />
     </div>
 
-    <div class="status-bar" v-if="!isTarget">
+    <div v-if="!isTarget" class="status-bar">
       <span v-if="game.targetLocked" class="locked-text">🔒 TA 已做出选择...</span>
       <span class="guess-stat">{{ game.guessCount }} 人已猜测</span>
     </div>

@@ -1,27 +1,26 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useGameStore } from '@/stores/game'
-import { mbtiApi } from '@/api/mbti'
-import DistributionChart from '@/components/DistributionChart.vue'
+import { useGameStore } from '../stores/game'
+import { mbtiApi } from '../api/mbti'
+import DistributionChart from '../components/DistributionChart.vue'
 
 const game = useGameStore()
-
-const isHost = game.myRole === 'host' || game.myRole === 'target'
-const showAnswer = computed(() => game.correctAnswer !== null)
-
-async function reveal() {
-  try {
-    await mbtiApi.revealAnswer(game.gameId!, false)
-  } catch (e) {
-    console.error('reveal failed:', e)
-  }
-}
+const canControl = game.myRole === 'host' || game.myRole === 'target'
+const hasAnswer = computed(() => game.correctAnswer !== null)
 
 async function showDist() {
   try {
     await mbtiApi.revealAnswer(game.gameId!, true)
   } catch (e) {
     console.error('show dist failed:', e)
+  }
+}
+
+async function reveal() {
+  try {
+    await mbtiApi.revealAnswer(game.gameId!, false)
+  } catch (e) {
+    console.error('reveal failed:', e)
   }
 }
 </script>
@@ -35,25 +34,32 @@ async function showDist() {
     </div>
 
     <div class="dist-area card">
-      <DistributionChart :distribution="game.distribution" :correct="game.correctAnswer" />
+      <DistributionChart
+        :distribution="game.distribution"
+        :correct="game.correctAnswer"
+      />
     </div>
 
-    <div v-if="showAnswer" class="result-card card fade-in">
+    <div v-if="hasAnswer" class="result-card card fade-in">
       <div class="correct-answer">
         ✨ TA 的真实答案是：<strong>{{ game.correctAnswer }}</strong>
       </div>
-      <div class="correct-pct" v-if="game.isCorrect !== null">
+      <div v-if="game.isCorrect !== null" class="correct-pct">
         <span v-if="game.isCorrect" class="result-correct">🎉 你猜对了！</span>
         <span v-else class="result-wrong">😅 翻车了</span>
       </div>
-      <div class="reveal-comment" v-if="game.revealComment">{{ game.revealComment }}</div>
+      <div v-if="game.revealComment" class="reveal-comment">{{ game.revealComment }}</div>
     </div>
 
-    <div v-if="isHost && !showAnswer" class="reveal-actions">
-      <button class="btn-primary" @click="showDist" v-if="Object.keys(game.distribution).length === 0">
+    <div v-if="canControl && !hasAnswer" class="reveal-actions">
+      <button
+        v-if="Object.keys(game.distribution).length === 0"
+        class="btn-primary"
+        @click="showDist"
+      >
         展示猜测分布
       </button>
-      <button class="btn-primary" @click="reveal" v-else>
+      <button v-else class="btn-primary" @click="reveal">
         揭晓答案
       </button>
     </div>

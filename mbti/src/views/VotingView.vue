@@ -1,20 +1,20 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useGameStore } from '@/stores/game'
-import { useCountdown } from '@/composables/useCountdown'
-import { mbtiApi } from '@/api/mbti'
-import CountdownBar from '@/components/CountdownBar.vue'
+import { useGameStore } from '../stores/game'
+import { useCountdown } from '../composables/useCountdown'
+import { mbtiApi } from '../api/mbti'
+import CountdownBar from '../components/CountdownBar.vue'
 
 const game = useGameStore()
 const countdown = useCountdown()
-const selectedId = ref<number | null>(null)
+const selected = ref<number | null>(null)
 const voted = ref(false)
 
-countdown.start(game.deadlineMs, 20000)
+countdown.start(game.deadlineMs, 20_000)
 
-async function vote(questionId: number) {
+async function onVote(questionId: number) {
   if (voted.value) return
-  selectedId.value = questionId
+  selected.value = questionId
   voted.value = true
   try {
     await mbtiApi.vote(game.gameId!, questionId)
@@ -29,19 +29,23 @@ async function vote(questionId: number) {
     <div class="page-title">你最想揭开 TA 的哪一面？</div>
 
     <div class="countdown-wrap card">
-      <CountdownBar :progress="countdown.progress.value" :seconds="countdown.seconds()" :urgent="countdown.isUrgent.value" />
+      <CountdownBar
+        :progress="countdown.progress.value"
+        :seconds="countdown.seconds()"
+        :urgent="countdown.isUrgent.value"
+      />
     </div>
 
     <div class="candidate-list">
       <div
-        v-for="q in game.candidateQuestions"
-        :key="q.id"
+        v-for="c in game.candidateQuestions"
+        :key="c.id"
         class="candidate-card card fade-in"
-        :class="{ selected: selectedId === q.id, voted }"
-        @click="vote(q.id)"
+        :class="{ selected: selected === c.id, voted }"
+        @click="onVote(c.id)"
       >
-        <div class="candidate-q">{{ q.question }}</div>
-        <div class="candidate-dim">{{ q.dimension }}</div>
+        <div class="candidate-q">{{ c.question }}</div>
+        <div class="candidate-dim">{{ c.dimension }}</div>
       </div>
     </div>
   </div>
@@ -60,14 +64,14 @@ async function vote(questionId: number) {
 .candidate-card {
   padding: 18px 16px;
   border: 2px solid var(--color-border);
-  transition: all 0.2s;
+  transition: all .2s;
 }
 .candidate-card.selected {
   border-color: var(--color-primary);
   background: var(--color-bg-muted);
 }
 .candidate-card.voted:not(.selected) {
-  opacity: 0.45;
+  opacity: .45;
 }
 .candidate-q {
   font-size: 14px;

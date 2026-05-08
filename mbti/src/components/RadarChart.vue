@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import type { MBTIDimension } from '@/types/game'
-
 defineProps<{
-  dimensions: MBTIDimension[]
+  dimensions: Array<{
+    dimension: string
+    dominant: string
+    percentage: number
+  }>
 }>()
 
 const colors = ['#FF5C80', '#D8B4FE', '#FF8FAB', '#BAE6FD']
@@ -10,14 +12,14 @@ const colors = ['#FF5C80', '#D8B4FE', '#FF8FAB', '#BAE6FD']
 
 <template>
   <div class="radar-chart">
-    <div v-for="(dim, i) in dimensions" :key="dim.dimension" class="dim-row">
-      <span class="dim-left" :style="{ color: colors[i % colors.length] }">
+    <div v-for="(dim, idx) in dimensions" :key="dim.dimension" class="dim-row">
+      <span class="dim-left" :style="{ color: colors[idx % colors.length] }">
         {{ dim.dimension.split('-')[0] }}
       </span>
       <div class="dim-track">
         <div
           class="dim-fill"
-          :style="{ width: `${dim.percentage}%`, background: colors[i % colors.length] }"
+          :style="{ width: `${dim.percentage}%`, background: colors[idx % colors.length] }"
         />
         <div class="dim-center" />
       </div>
@@ -64,7 +66,7 @@ const colors = ['#FF5C80', '#D8B4FE', '#FF8FAB', '#BAE6FD']
   top: 0;
   height: 100%;
   border-radius: 5px;
-  transition: width 0.5s ease-out;
+  transition: width .5s ease-out;
 }
 .dim-center {
   position: absolute;

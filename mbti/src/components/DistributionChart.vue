@@ -6,29 +6,31 @@ const props = defineProps<{
   correct: string | null
 }>()
 
-const items = computed(() => {
+const bars = computed(() => {
   const total = Object.values(props.distribution).reduce((a, b) => a + b, 0)
-  return Object.entries(props.distribution).map(([key, count]) => ({
-    label: key,
-    count,
-    pct: total > 0 ? Math.round((count / total) * 100) : 0,
-    isCorrect: key === props.correct,
-  })).sort((a, b) => b.count - a.count)
+  return Object.entries(props.distribution)
+    .map(([label, count]) => ({
+      label,
+      count,
+      pct: total > 0 ? Math.round((count / total) * 100) : 0,
+      isCorrect: label === props.correct,
+    }))
+    .sort((a, b) => b.count - a.count)
 })
 </script>
 
 <template>
-  <div class="dist-chart" v-if="items.length > 0">
-    <div v-for="item in items" :key="item.label" class="dist-row">
-      <span class="dist-label" :class="{ correct: item.isCorrect }">{{ item.label }}</span>
+  <div v-if="bars.length > 0" class="dist-chart">
+    <div v-for="bar in bars" :key="bar.label" class="dist-row">
+      <span class="dist-label" :class="{ correct: bar.isCorrect }">{{ bar.label }}</span>
       <div class="dist-track">
         <div
           class="dist-fill"
-          :class="{ correct: item.isCorrect }"
-          :style="{ width: `${item.pct}%` }"
+          :class="{ correct: bar.isCorrect }"
+          :style="{ width: `${bar.pct}%` }"
         />
       </div>
-      <span class="dist-pct" :class="{ correct: item.isCorrect }">{{ item.pct }}%</span>
+      <span class="dist-pct" :class="{ correct: bar.isCorrect }">{{ bar.pct }}%</span>
     </div>
   </div>
 </template>
@@ -62,9 +64,9 @@ const items = computed(() => {
 }
 .dist-fill {
   height: 100%;
-  background: #FFB5C2;
+  background: #ffb5c2;
   border-radius: 12px;
-  transition: width 0.5s ease-out;
+  transition: width .5s ease-out;
 }
 .dist-fill.correct {
   background: var(--color-primary);

@@ -1,13 +1,54 @@
-import http from './http'
-import type { PackInfo, RankingItem, MBTIProfile } from '@/types/game'
+import axios from 'axios'
+import { hasBridge, bridgeRequest } from '../bridge'
+
+const http = axios.create({
+  baseURL: '/mbti/v1',
+  timeout: 10_000,
+  headers: { 'Content-Type': 'application/json' },
+})
+
+http.interceptors.request.use((config) => {
+  const token = window.__authToken
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
+  return config
+})
+
+http.interceptors.response.use((res) => {
+  const data = res.data
+  if (data.res_code && data.res_code !== 0) {
+    return Promise.reject(new Error(data.res_message || 'unknown error'))
+  }
+  return data
+}, (err) => Promise.reject(err))
+
+const api = {
+  async get(path: string, params?: Record<string, any>): Promise<any> {
+    if (hasBridge()) {
+      const qs = params
+        ? '?' + Object.entries(params).map(([k, v]) => `${k}=${encodeURIComponent(v)}`).join('&')
+        : ''
+      return bridgeRequest('GET', `/mbti/v1${path}${qs}`)
+    }
+    return await http.get(path, { params })
+  },
+
+  async post(path: string, body?: Record<string, any>): Promise<any> {
+    if (hasBridge()) {
+      return bridgeRequest('POST', `/mbti/v1${path}`, body)
+    }
+    return await http.post(path, body)
+  },
+}
 
 export const mbtiApi = {
   listPacks(region = '') {
-    return http.get<any, { packs: PackInfo[] }>('/packs', { params: { region } })
+    return api.get('/packs', { region })
   },
 
   createGame(roomId: number, targetUid: number, packId: number, totalQuestions: number) {
-    return http.post<any, { game_id: number }>('/game', {
+    return api.post('/game', {
       room_id: roomId,
       target_uid: targetUid,
       pack_id: packId,
@@ -16,49 +57,31 @@ export const mbtiApi = {
   },
 
   nextQuestion(gameId: number) {
-    return http.post<any, any>('/game/next', { game_id: gameId })
+    return api.post('/game/next', { game_id: gameId })
   },
 
   revealAnswer(gameId: number, showDistributionOnly = false) {
-    return http.post<any, {
-      distribution: Record<string, number>
-      correct_answer: string
-      correct_pct: number
-      correct_uids: number[]
-      reveal_comment: string
-    }>('/game/reveal', { game_id: gameId, show_distribution_only: showDistributionOnly })
+    return api.post('/game/reveal', { game_id: gameId, show_distribution_only: showDistributionOnly })
   },
 
   endGame(gameId: number) {
-    return http.post<any, any>('/game/end', { game_id: gameId })
+    return api.post('/game/end', { game_id: gameId })
   },
 
   submitTargetAnswer(gameId: number, questionId: number, answer: string) {
-    return http.post<any, any>('/game/target_answer', {
-      game_id: gameId,
-      question_id: questionId,
-      answer,
-    })
+    return api.post('/game/target_answer', { game_id: gameId, question_id: questionId, answer })
   },
 
   joinGame(gameId: number) {
-    return http.post<any, {
-      phase: number
-      current_question_idx: number
-      total_questions: number
-    }>('/game/join', { game_id: gameId })
+    return api.post('/game/join', { game_id: gameId })
   },
 
   vote(gameId: number, questionId: number, useBoost = false) {
-    return http.post<any, any>('/game/vote', {
-      game_id: gameId,
-      question_id: questionId,
-      use_boost: useBoost,
-    })
+    return api.post('/game/vote', { game_id: gameId, question_id: questionId, use_boost: useBoost })
   },
 
   submitGuess(gameId: number, questionId: number, answer: string, useBoost = false) {
-    return http.post<any, any>('/game/guess', {
+    return api.post('/game/guess', {
       game_id: gameId,
       question_id: questionId,
       answer,
@@ -67,20 +90,14 @@ export const mbtiApi = {
   },
 
   getGameState(gameId: number) {
-    return http.get<any, any>('/game/state', { params: { game_id: gameId } })
+    return api.get('/game/state', { game_id: gameId })
   },
 
   getSettlement(gameId: number) {
-    return http.get<any, { rankings: RankingItem[]; my_rank: number; my_score: number; total_players: number }>(
-      '/game/settlement',
-      { params: { game_id: gameId } },
-    )
+    return api.get('/game/settlement', { game_id: gameId })
   },
 
   getProfile(gameId: number) {
-    return http.get<any, { profile: MBTIProfile; target_uid: number; target_nickname: string; target_avatar_url: string }>(
-      '/game/profile',
-      { params: { game_id: gameId } },
-    )
+    return api.get('/game/profile', { game_id: gameId })
   },
 }

@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { useGameStore } from '@/stores/game'
+import { useGameStore } from '../stores/game'
 import { useRouter } from 'vue-router'
-import RadarChart from '@/components/RadarChart.vue'
+import RadarChart from '../components/RadarChart.vue'
 
 const game = useGameStore()
 const router = useRouter()
 
-function next() {
+function goSettlement() {
   router.push('/settlement')
 }
 </script>
@@ -15,15 +15,14 @@ function next() {
   <div class="page">
     <div class="page-title">🎭 本局灵魂画像</div>
 
-    <div class="profile-card card fade-in" v-if="game.profile">
+    <div v-if="game.profile" class="profile-card card fade-in">
       <div class="mbti-type">{{ game.profile.mbti_type }}</div>
       <div class="mbti-label">{{ game.profile.label }}</div>
       <div class="mbti-desc">{{ game.profile.description }}</div>
-
       <RadarChart :dimensions="game.profile.dimensions" />
     </div>
 
-    <button class="btn-primary next-btn" @click="next">查看排行榜</button>
+    <button class="btn-primary next-btn" @click="goSettlement">查看排行榜</button>
   </div>
 </template>
 

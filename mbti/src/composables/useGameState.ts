@@ -1,24 +1,32 @@
 import { onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { useGameStore } from '@/stores/game'
-import { bridge } from '@/bridge/native'
+import { useGameStore } from '../stores/game'
+import { useUserStore } from '../stores/user'
+import { bridge } from '../bridge'
 
 export function useGameState() {
-  const store = useGameStore()
+  const game = useGameStore()
+  const user = useUserStore()
   const router = useRouter()
 
   const handler = (event: string, data: any) => {
     switch (event) {
+      case '__room_context':
+        user.setRoomContext(data)
+        break
+
       case 'mbti.game_started':
-        store.initGame(data)
+        game.initGame(data)
         router.push('/lobby')
         break
+
       case 'mbti.voting_started':
-        store.startVoting(data.candidates)
+        game.startVoting(data.candidates)
         router.push('/voting')
         break
+
       case 'mbti.guessing_started':
-        store.startGuessing(
+        game.startGuessing(
           {
             id: data.question_id,
             question: data.question,
@@ -27,35 +35,40 @@ export function useGameState() {
           },
           data.deadline_ms,
         )
-        store.currentQuestionIdx = data.q_idx
-        store.totalQuestions = data.total
+        game.currentQuestionIdx = data.q_idx
+        game.totalQuestions = data.total
         router.push('/guessing')
         break
+
       case 'mbti.target_locked':
-        store.setTargetLocked()
+        game.setTargetLocked()
         break
+
       case 'mbti.guess_count':
-        store.updateGuessCount(data.guess_count)
+        game.updateGuessCount(data.guess_count)
         break
+
       case 'mbti.reveal_distribution':
-        store.showDistribution(data.distribution)
+        game.showDistribution(data.distribution)
         router.push('/reveal')
         break
+
       case 'mbti.reveal_answer':
-        store.revealAnswer(data)
+        game.revealAnswer(data)
         break
+
       case 'mbti.streak_alert':
-        store.showStreak(data)
+        game.showStreak(data)
         break
+
       case 'mbti.profile_ready':
-        store.setProfile(data)
+        game.setProfile(data)
         router.push('/profile')
         break
+
       case 'mbti.settlement':
-        store.setSettlement(data)
+        game.setSettlement(data)
         router.push('/settlement')
-        break
-      case 'mbti.game_ended':
         break
     }
   }

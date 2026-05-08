@@ -1,43 +1,51 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { mbtiApi } from '@/api/mbti'
-import { useGameStore } from '@/stores/game'
-import type { PackInfo } from '@/types/game'
+import { useGameStore } from '../stores/game'
+import { useUserStore } from '../stores/user'
+import { mbtiApi } from '../api/mbti'
 
 const router = useRouter()
 const game = useGameStore()
+const user = useUserStore()
+
+interface PackInfo {
+  id: number
+  name: string
+  icon: string
+  description: string
+}
 
 const packs = ref<PackInfo[]>([])
-const selectedPackId = ref(0)
+const selectedPack = ref(0)
 const questionCount = ref(8)
+const creating = ref(false)
 
 onMounted(async () => {
   try {
-    const res = await mbtiApi.listPacks()
-    packs.value = res.packs || []
+    const data = await mbtiApi.listPacks()
+    packs.value = data.packs || []
     if (packs.value.length > 0) {
-      selectedPackId.value = packs.value[0].id
+      selectedPack.value = packs.value[0].id
     }
   } catch (e) {
     console.error('load packs failed:', e)
   }
 })
 
-const loading = ref(false)
-
 async function startGame() {
-  if (loading.value) return
-  loading.value = true
+  if (creating.value) return
+  creating.value = true
   try {
-    const res = await mbtiApi.createGame(0, 0, selectedPackId.value, questionCount.value)
-    game.gameId = res.game_id
+    const roomId = Number(user.roomId) || 0
+    const result = await mbtiApi.createGame(roomId, 0, selectedPack.value, questionCount.value)
+    game.gameId = result.game_id
     game.myRole = 'host'
-    await mbtiApi.nextQuestion(res.game_id)
-    router.push('/lobby')
+    await mbtiApi.nextQuestion(result.game_id)
+    // Don't navigate — wait for server push (mbti.guessing_started) to drive navigation
   } catch (e) {
     console.error('create game failed:', e)
-    loading.value = false
+    creating.value = false
   }
 }
 </script>
@@ -51,8 +59,8 @@ async function startGame() {
         v-for="pack in packs"
         :key="pack.id"
         class="pack-card"
-        :class="{ active: selectedPackId === pack.id }"
-        @click="selectedPackId = pack.id"
+        :class="{ active: selectedPack === pack.id }"
+        @click="selectedPack = pack.id"
       >
         <div class="pack-icon">{{ pack.icon }}</div>
         <div class="pack-body">
@@ -71,12 +79,18 @@ async function startGame() {
           class="count-btn"
           :class="{ active: questionCount === n }"
           @click="questionCount = n"
-        >{{ n }}</button>
+        >
+          {{ n }}
+        </button>
       </div>
     </div>
 
-    <button class="btn-primary start-btn" :disabled="loading" @click="startGame">
-      {{ loading ? '创建中...' : '开始游戏' }}
+    <button
+      class="btn-primary start-btn"
+      :disabled="creating"
+      @click="startGame"
+    >
+      {{ creating ? '创建中...' : '开始游戏' }}
     </button>
   </div>
 </template>
@@ -96,7 +110,7 @@ async function startGame() {
   background: var(--color-bg-card);
   border: 2px solid var(--color-border);
   border-radius: var(--radius-md);
-  transition: all 0.2s;
+  transition: all .2s;
   box-shadow: var(--shadow-card);
 }
 .pack-card.active {
@@ -143,12 +157,12 @@ async function startGame() {
   color: var(--color-text);
   font-weight: 700;
   font-size: 14px;
-  transition: all 0.2s;
+  transition: all .2s;
 }
 .count-btn.active {
   background: var(--color-primary);
   border-color: var(--color-primary);
-  color: white;
+  color: #fff;
 }
 .start-btn {
   width: 100%;

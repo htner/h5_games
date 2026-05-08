@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { useGameStore } from '@/stores/game'
+import { useGameStore } from '../stores/game'
 import { useRouter } from 'vue-router'
-import { bridge } from '@/bridge/native'
-import RankingList from '@/components/RankingList.vue'
+import { bridge } from '../bridge'
+import RankingList from '../components/RankingList.vue'
 
 const game = useGameStore()
 const router = useRouter()
@@ -11,7 +11,7 @@ function share() {
   bridge.shareCard('', `我在灵魂读心术中排名第 ${game.myRank} 名！`)
 }
 
-function backToLobby() {
+function goBack() {
   game.reset()
   router.push('/lobby')
 }
@@ -23,13 +23,15 @@ function backToLobby() {
 
     <RankingList :items="game.ranking" />
 
-    <div class="my-rank card" v-if="game.myRank > 0">
-      <span>你的排名：第 <strong>{{ game.myRank }}</strong> 名 / 共 {{ game.totalPlayers }} 人</span>
+    <div v-if="game.myRank > 0" class="my-rank card">
+      <span>
+        你的排名：第 <strong>{{ game.myRank }}</strong> 名 / 共 {{ game.totalPlayers }} 人
+      </span>
     </div>
 
     <div class="actions">
       <button class="btn-primary" @click="share">分享排名</button>
-      <button class="btn-secondary" @click="backToLobby">返回</button>
+      <button class="btn-secondary" @click="goBack">返回</button>
     </div>
   </div>
 </template>
